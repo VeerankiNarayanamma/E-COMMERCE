@@ -9,7 +9,7 @@ const showToast = (message, type = "success") => {
   toast.style.position = "fixed";
   toast.style.top = "20px";
   toast.style.right = "20px";
-  toast.style.backgroundColor = type === "success" ? "#10B981" : "#3B82F6";
+  toast.style.backgroundColor = type === "success" ?  "#f9443bff" : "#10B981";
   toast.style.color = "white";
   toast.style.padding = "12px 20px";
   toast.style.borderRadius = "8px";
@@ -33,7 +33,7 @@ const showToast = (message, type = "success") => {
   }, 3000);
 };
 
-function Cart({ cart, removeFromCart, updateQuantity, updateSize, getCartTotal }) {
+function Cart({ cart, removeFromCart, updateQuantity, updateSize, getCartTotal, addToCart }) {
   const formatPrice = (price) =>
     new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -44,7 +44,7 @@ function Cart({ cart, removeFromCart, updateQuantity, updateSize, getCartTotal }
   // Enhanced functions with toast notifications
   const handleRemoveFromCart = (itemId, itemName) => {
     removeFromCart(itemId);
-    showToast(`"${itemName}" removed from cart!`, "success");
+    showToast(`"${itemName}" removed from cart`, "success");
   };
 
   const handleUpdateQuantity = (itemId, newQuantity, itemName, currentQuantity) => {
@@ -53,9 +53,9 @@ function Cart({ cart, removeFromCart, updateQuantity, updateSize, getCartTotal }
     updateQuantity(itemId, newQuantity);
     
     if (newQuantity > currentQuantity) {
-      showToast(`Increased quantity of "${itemName}"!`, "info");
+      showToast(`Added "${itemName}"`, "info");
     } else {
-      showToast(`Decreased quantity of "${itemName}"!`, "info");
+      showToast(`Removed "${itemName}"`, "info");
     }
   };
 
@@ -68,6 +68,25 @@ function Cart({ cart, removeFromCart, updateQuantity, updateSize, getCartTotal }
     showToast("Redirecting to checkout...", "success");
   };
 
+  // Function to demonstrate adding an item to cart (for testing purposes)
+  const handleAddSampleItem = () => {
+    const sampleItem = {
+      id: Date.now(),
+      name: "Sample Product",
+      price: 1999,
+      image: "https://via.placeholder.com/80",
+      quantity: 1,
+      size: "M"
+    };
+    
+    if (addToCart) {
+      addToCart(sampleItem);
+      showToast(`"${sampleItem.name}" added to cart`, "success");
+    } else {
+      showToast("Add to cart function not available", "info");
+    }
+  };
+
   if (cart.length === 0) {
     return (
       <div
@@ -77,7 +96,36 @@ function Cart({ cart, removeFromCart, updateQuantity, updateSize, getCartTotal }
           color: "#555",
         }}
       >
-        <h2>Your Cart is Empty 🛍️</h2>
+        <h2>Your Cart is Empty</h2>
+        <p style={{ marginBottom: "1.5rem" }}>
+          Add some items to see them here!
+        </p>
+        
+        {/* Demo button to add sample item */}
+        <button
+          onClick={handleAddSampleItem}
+          style={{
+            background: "linear-gradient(135deg, #10B981, #059669)",
+            color: "#fff",
+            border: "none",
+            padding: "0.8rem 1.8rem",
+            borderRadius: "8px",
+            cursor: "pointer",
+            fontWeight: "600",
+             marginTop: "1.5rem",
+            marginRight: "1rem",
+            transition: "0.3s",
+          }}
+          onMouseEnter={(e) =>
+            (e.target.style.background = "linear-gradient(135deg, #059669, #047857)")
+          }
+          onMouseLeave={(e) =>
+            (e.target.style.background = "linear-gradient(135deg, #10B981, #059669)")
+          }
+        >
+          Add Sample Item 
+        </button>
+        
         <Link
           to="/"
           style={{
